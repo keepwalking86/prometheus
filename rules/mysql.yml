@@ -1,0 +1,36 @@
+#Alerting Rules for MySQL Cluster
+groups:
+- name: MySQL cluster
+  rules:
+#MySQL down
+#MySQL instance is down
+  - alert: MySQLDown
+    expr: redis_up == 0
+    for: 5m
+    labels:
+      severity: critical
+    annotations:
+      summary: "MySQL down (instance {{ $labels.instance }})"
+      description: "MySQL instance is down\n  VALUE = {{ $value }}\n  LABELS: {{ $labels }}"
+
+#Too many connections
+#MySQL instance has too many connections
+  - alert: TooManyConnections
+    expr: mysql_global_status_threads_connected / mysql_global_variables_max_connections * 100 > 80
+    for: 5m
+    labels:
+      severity: warning
+    annotations:
+      summary: "MySQL has too many connections on {{ $labels.instance }})"
+      description: "The server has too many connections. {{$value}} > 80% for over 5 minutes"
+
+#MySQL Replication Not Running
+  - alert: MySQLReplicationNotRunning
+    expr: mysql_slave_status_slave_io_running == 0 or mysql_slave_status_slave_sql_running
+      == 0
+    for: 2m
+    labels:
+      severity: critical
+    annotations:
+      description: Slave replication (IO or SQL) has been down for more than 2 minutes.
+      summary: Slave replication is not running

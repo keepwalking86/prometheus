@@ -1,0 +1,55 @@
+#Alerting Rules for Network
+groups:
+- name: Network
+  rules:
+
+#Network interface is down
+  - alert: InterfaceDown
+    expr: ifAdminStatus == 0
+    for: 5m
+    labels:
+      severity: critical
+    annotations:
+      summary: "Interface {{ $labels.instance }} is down"
+      description: "Interface is down\n  VALUE = {{ $value }}\n  LABELS: {{ $labels }}"
+
+#Network throughput in
+#Hight Throughput in  (> 500 Mb/s)
+  - alert: ThroughputIn
+    expr: rate(ifHCInOctets[5m])*8/1024/1024 > 500
+    for: 5m
+    labels:
+      severity: warning
+    annotations:
+      summary: "High bandwidth (instance {{ $labels.instance }})"
+      description: "Network throughput in is {{ $value }} Mbps"
+#Network interfaces are probably too much bandwidth (> 600 Mb/s)
+  - alert: ThroughputIn
+    expr: rate(ifHCInOctets[5m])*8/1024/1024 > 600
+    for: 5m
+    labels:
+      severity: critical
+    annotations:
+      summary: "Out of bandwidth (instance {{ $labels.instance }})"
+      description: "Network throughput in is {{ $value }} Mbps"
+
+#Network throughput out
+#High bandwidth (> 800 Mbps)
+  - alert: ThroughputOut
+    expr: rate(ifHCOutOctets[5m])*8/1024/1024 > 800
+    for: 5m
+    labels:
+      severity: warning
+    annotations:
+      summary: "High network throughput out (instance {{ $labels.instance }})"
+      description: "High Bandwidth, VALUE = {{ $value }} > 800Mpbs"
+
+#High bandwidth (> 900 Mbps)
+  - alert: ThroughputOut
+    expr: rate(ifHCOutOctets[5m])*8/1024/1024 > 1400
+    for: 5m
+    labels:
+      severity: critical
+    annotations:
+      summary: "High network throughput out (instance {{ $labels.instance }})"
+      description: "High Bandwidth, VALUE = {{ $value }} > 900Mpbs"
