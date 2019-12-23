@@ -1,0 +1,37 @@
+global:
+  resolve_timeout: 5m
+  smtp_from: info@example.com
+  smtp_smarthost: 'mail.example.com:25'
+  smtp_auth_username: 'info@example.com'
+  smtp_auth_password: 'P@ssw0rd'
+  smtp_require_tls: false
+templates:
+- '/etc/alertmanager/templates/*.*'
+#
+inhibit_rules:
+  - source_match:
+      severity: 'critical'
+    target_match:
+      severity: 'warning'
+    equal: ['alertname', 'datacenter', 'app']
+#
+route:
+  group_wait: 30s
+  group_interval: 30s
+  repeat_interval: 60m
+  group_by: [alertname, host]
+  receiver: 'email'
+  #
+  routes:
+  - receiver: 'telegram-webhook'
+    repeat_interval: 2m
+    match:
+        severity: critical
+#
+receivers:
+  - name: 'telegram-webhook'
+    webhook_configs:
+      - url: http://192.168.1.113:9999/alert
+  - name: 'email'
+    email_configs:
+    - to: 'keepwalking86@example.com'
