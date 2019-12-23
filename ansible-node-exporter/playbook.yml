@@ -1,0 +1,8 @@
+---
+- hosts: node_exporter
+  become: yes
+  vars_files:
+    - config_enviroment.yml
+
+  roles:
+    - undergreen.prometheus-node-exporter

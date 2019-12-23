@@ -1,0 +1,5 @@
+---
+    #Config node_exporter
+    prometheus_node_exporter_version: 0.17.0
+    prometheus_node_exporter_release_name: "node_exporter-{{ prometheus_node_exporter_version }}.linux-amd64"
+    prometheus_node_exporter_url: https://github.com/prometheus/node_exporter/releases/download/v{{ prometheus_node_exporter_version }}/node_exporter-{{ prometheus_node_exporter_version }}.linux-amd64.tar.gz
