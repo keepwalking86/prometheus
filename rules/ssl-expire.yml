@@ -9,8 +9,6 @@ groups:
       annotations:
         description: 'SSL {{ $labels.instance }} will expire in less than 20 days'
         summary: '{{ $labels.instace }}: SSL is expiring'
-  - name: SSL Expiring
-    rules:
     - alert: SSLExpiring
       expr: probe_ssl_earliest_cert_expiry{job="blackbox"} - time() < 86400 * 5 
       for: 10m
