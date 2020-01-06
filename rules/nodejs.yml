@@ -1,0 +1,31 @@
+#express-prometheus-middleware
+groups: 
+  - name: Nodejs Application
+    rules:
+    #Error when http status code <200 or >=400
+    - alert: HttpStatusCode
+      expr: rate(http_request_duration_seconds_count{status=~"^1..$"}[1m]) >1  OR rate(http_request_duration_seconds_count{status=~"^4..$"}[1m]) >1
+      for: 2m
+      labels:
+        severity: critical
+      annotations:
+        summary: "HTTP Status Code (instance {{ $labels.instance }})"
+        description: "HTTP status code is not 200-399\n  VALUE = {{ $value }}\n  LABELS: {{ $labels }}"
+    #Error when http status code is 5xx
+    - alert: Error5xxResponse
+      expr: rate(http_request_duration_seconds_count{status=~"^5..$"}[1m]) >1
+      for: 1m
+      labels:
+        severity: critical
+      annotations:
+        summary: "HTTP Status Code (instance {{ $labels.instance }})"
+        description: "HTTP status code is 5xx\n  VALUE = {{ $value }}\n  LABELS: {{ $labels }}"
+    #High median response time when >100ms (0.1s)
+    - alert: HighMedianResponseTime
+      expr: histogram_quantile(0.5, sum(rate(http_request_duration_seconds_bucket[1m])) by (le, method, route, status)) > 0.1
+      for: 1m
+      labels:
+        severity: critical
+      annotations:
+        summary: "High median response time on {{ $labels.alias }} and {{ $labels.method }} {{ $labels.status }}"
+        description: "{{ $labels.alias }}, {{ $labels.method }} {{ $labels.status }} has a median response time above 100ms (current value: {{ $value }}ms)"
