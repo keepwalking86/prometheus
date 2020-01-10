@@ -1,0 +1,14 @@
+#Alerting Rules for Instance
+groups:
+- name: General Instance
+  rules:
+
+#Instance Down
+  - alert: InstanceUnreachable
+    expr: up == 0
+    for: 2m
+    labels:
+      severity: critical
+    annotations:
+      summary: "Instance is unreachable"
+      description: "Instance {{ $labels.instance }} is unreachable"
