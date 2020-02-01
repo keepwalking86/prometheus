@@ -69,7 +69,8 @@ groups:
 #Out of disk space
 #Disk is almost full (< 10% left)[copy]
   - alert: OutOfDiskSpace
-    expr: node_filesystem_free_bytes{device="/dev/mapper/centos-root", mountpoint ="/"} / node_filesystem_size_bytes{device="/dev/mapper/centos-root", mountpoint ="/"} * 100 < 10
+    expr: node_filesystem_avail_bytes*100/node_filesystem_size_bytes <10
+    #expr: node_filesystem_free_bytes{device="/dev/mapper/centos-root", mountpoint ="/"} / node_filesystem_size_bytes{device="/dev/mapper/centos-root", mountpoint ="/"} * 100 < 10
     for: 5m
     labels:
       severity: critical
@@ -78,7 +79,8 @@ groups:
       description: "Disk is almost full (< 10% left)\n  VALUE = {{ $value }}\n  LABELS: {{ $labels }}"
 #Disk is almost full (< 20% left)[copy]
   - alert: OutOfDiskSpace
-    expr: node_filesystem_free_bytes{device="/dev/mapper/centos-root", mountpoint ="/"} / node_filesystem_size_bytes{device="/dev/mapper/centos-root", mountpoint ="/"} * 100 < 20
+    expr: node_filesystem_avail_bytes*100/node_filesystem_size_bytes <20
+    #expr: node_filesystem_free_bytes{device="/dev/mapper/centos-root", mountpoint ="/"} / node_filesystem_size_bytes{device="/dev/mapper/centos-root", mountpoint ="/"} * 100 < 20
     for: 5m
     labels:
       severity: warning
