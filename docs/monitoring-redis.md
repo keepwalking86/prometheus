@@ -123,6 +123,7 @@ Cuối cùng, thực hiện restart prometheus
 
 Kiểm tra thông tin các metrics được thu thập
 
+```
 curl http://192.168.1.111:9121/metrics?target=redis://192.168.1.112:30001
 # HELP redis_allocator_active_bytes allocator_active_bytes metric
 # TYPE redis_allocator_active_bytes gauge
@@ -173,3 +174,4 @@ redis_cluster_current_epoch 8
 # TYPE redis_cluster_enabled gauge
 redis_cluster_enabled 1
 ...
+```
