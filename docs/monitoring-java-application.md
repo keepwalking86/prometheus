@@ -148,7 +148,7 @@ Trong đó `192.168.1.211:8080` địa chỉ và port của JMX exporter đã ex
 
 ## Visualize với Grafana
 
-Có thể sử dụng JMX Overview đã được tùy chỉnh [https://raw.githubusercontent.com/keepwalking86/prometheus/master/Grafana-dashboards/JMX-Overview-customize.json](JMX-Overview)
+Có thể sử dụng JMX Overview đã được tùy chỉnh [#JMX-Overview](https://raw.githubusercontent.com/keepwalking86/prometheus/master/Grafana-dashboards/JMX-Overview-customize.json)
 
 <p align="center">
 <img src="../images/java-application-grafana.png" />
