@@ -14,7 +14,7 @@
 
 - [Monitoring Redis](docs/monitoring-redis.md)
 
-- [Monitoring Java Application](docs/monitoring-java.md)
+- [Monitoring Java Application](docs/monitoring-java-application.md)
 
 - [Monitoring Node.js](docs/monitoring-nodejs)
 
@@ -29,5 +29,7 @@
 ## Một số Grafana dashboard đã tùy chỉnh
 
 - [Customize Grafana dashboards](Grafana-dashboards)
+
+## Mẫu cấu hình
 
 Updating ...
