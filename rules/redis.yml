@@ -78,3 +78,12 @@ groups:
     annotations:
       summary: "Rejected connections (instance {{ $labels.instance }})"
       description: "Some connections to Redis has been rejected\n  VALUE = {{ $value }}\n  LABELS: {{ $labels }}"
+#Cluster size mismatch node
+  - alert: ClusterSize
+    expr: sum(redis_up{job="redis_exporter_targets"}) < 6
+    for: 2m
+    labels:
+      severity: "critical"
+    annotations:
+      description: "Cluster size mismatch node"
+      summary: Some of the node(s) has gone out of the cluster
