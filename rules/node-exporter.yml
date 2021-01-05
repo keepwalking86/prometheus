@@ -134,8 +134,8 @@ groups:
 #High CPU load
 #CPU load is > 80%[copy]
   - alert: HighCpuLoad
-    expr: 100 - (avg by(instance) (irate(node_cpu_seconds_total{mode="idle"}[5m])) * 100) > 80
-    for: 5m
+    expr: 100 - (avg by(instance) (irate(node_cpu_seconds_total{mode="idle"}[2m])) * 100) > 80
+    for: 2m
     labels:
       severity: critical
     annotations:
@@ -152,3 +152,20 @@ groups:
     annotations:
       summary: "Swap is filling up (instance {{ $labels.instance }})"
       description: "Swap is filling up (>80%)\n  VALUE = {{ $value }}\n  LABELS: {{ $labels }}"
+#DiskIO is high
+  - alert: DiskWriteHigh
+    expr: rate(node_disk_writes_completed_total[1m]) > 1000
+    for: 2m
+    labels:
+      severity: critical
+    annotations:
+      summary: "Disk IOps (writes completed) is high (instance {{ $labels.instance }})"
+      description: "Disk writes completed is high (>1000 IOps)\n  VALUE = {{ $value }}\n  LABELS: {{ $labels }}"
+  - alert: DiskReadHigh
+    expr: rate(node_disk_reads_completed_total[1m]) > 1000
+    for: 2m
+    labels:
+      severity: critical
+    annotations:
+      summary: "Disk IOps (reads completed) is high (instance {{ $labels.instance }})"
+      description: "Disk reads completed is high (>1000 IOps)\n  VALUE = {{ $value }}\n  LABELS: {{ $labels }}"
