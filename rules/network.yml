@@ -53,3 +53,21 @@ groups:
     annotations:
       summary: "High network throughput out (instance {{ $labels.instance }})"
       description: "High Bandwidth, VALUE = {{ $value }} > 900Mpbs"
+
+# Network Interfaces Speed
+  - alert: PortChannel
+    expr: ifHighSpeed{ifDescr="Port-channel1",ifIndex="5001",ifName="Po1",instance="192.168.1.254",job="snmp"} < 4000
+    for: 1m
+    labels:
+      severity: critical
+    annotations:
+      summary: "Port-Channel1 Internet network interface speed is changed(instance {{ $labels.instance }})"
+      description: "Network Speed, VALUE = {{ $value }} <4000Mbps"
+  - alert: ChangedInterfaceSpeed
+    expr: ifHighSpeed{instance="192.168.1.254",ifName=~"Gi1/0/.*",ifName!="Gi1/0/18",ifName!="Gi1/0/25",ifName!="Gi1/0/26",ifName!="Gi1/0/9"} < 1000
+    for: 1m
+    labels:
+      severity: critical
+    annotations:
+      summary: "Network interface speed is changed (instance {{ $labels.instance }})"
+      description: "Network interface speed, VALUE = {{ $value }} < 1000Mbps"
