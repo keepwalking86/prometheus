@@ -1,0 +1,38 @@
+---
+- name: Download MySQL Exporter source package
+  get_url:
+    url: "{{ mysql_exporter_url }}"
+    dest: /opt/{{ mysql_exporter_release_name }}.tar.gz
+
+- name: Download and extra mysqld_exporter
+  shell: |
+    cd /opt/
+    tar zxf {{ mysql_exporter_release_name }}.tar.gz
+    mv {{ mysql_exporter_release_name }}/mysqld_exporter /usr/bin/
+    chown prometheus. /usr/bin/mysqld_exporter
+
+- name: make directory
+  file: path=/etc/mysql_exporter/ state=directory
+
+- name: Store mysqld_exporter account
+  template:
+    src: my.j2
+    dest: /etc/mysql_exporter/my.cnf
+    owner: prometheus
+    group: prometheus
+    mode: '0600'
+
+- name: Create mysql_exporter service for systemd
+  template:
+    src: mysql_exporter.j2
+    dest: /lib/systemd/system/mysql_exporter.service
+
+- name: Sure mysql_exporter starts at boot
+  systemd:
+    name: mysql_exporter
+    enabled: yes
+
+- name: Start mysql_exporter by systemd
+  systemd:
+    name: mysql_exporter
+    state: started

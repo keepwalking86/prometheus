@@ -1,0 +1,7 @@
+---
+    #Config node_exporter
+    mysql_exporter_version: 0.12.1
+    mysql_exporter_release_name: "mysqld_exporter-{{ mysql_exporter_version }}.linux-amd64"
+    mysql_exporter_url: https://github.com/prometheus/mysqld_exporter/releases/download/v{{mysql_exporter_version}}/mysqld_exporter-{{mysql_exporter_version}}.linux-amd64.tar.gz
+    mysql_exporter_user: mysqlexporter
+    password: P@ssw0rd
