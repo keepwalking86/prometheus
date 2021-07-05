@@ -1,5 +1,5 @@
 #express-prometheus-middleware
-groups: 
+groups:
   - name: Nodejs Application
     rules:
     #Error when http status code <200 or >=400
@@ -22,10 +22,28 @@ groups:
         description: "HTTP status code is 5xx\n  VALUE = {{ $value }}\n  LABELS: {{ $labels }}"
     #High median response time when >100ms (0.1s)
     - alert: HighMedianResponseTime
-      expr: histogram_quantile(0.5, sum(rate(http_request_duration_seconds_bucket[1m])) by (le, method, route, status)) > 0.1
-      for: 1m
+      #expr: histogram_quantile(0.5, sum(rate(http_request_duration_seconds_bucket[1m])) by (le, method, route, status)) > 0.1
+      expr: avg(rate(http_request_duration_seconds_sum[1m]) / rate(http_request_duration_seconds_count[1m])) by (alias, route, method, status) >2.0
+      for: 2m
       labels:
         severity: critical
       annotations:
-        summary: "High median response time on {{ $labels.alias }} and {{ $labels.method }} {{ $labels.status }}"
-        description: "{{ $labels.alias }}, {{ $labels.method }} {{ $labels.status }} has a median response time above 100ms (current value: {{ $value }}ms)"
+        summary: "High median response time on {{ $labels.instance }} and {{ $labels.method }} {{ $labels.status }}"
+        description: "{{ $labels.instance }}, {{ $labels.method }}, {{ $labels.route }}, {{ $labels.status }} has a median response time above 300ms (current value: {{ $value }}s)"
+    - alert: NodeJSServiceRestart
+      expr: sum(changes(process_start_time_seconds[1m])) by (alias) > 0
+      for: 0m
+      labels:
+        severity: warning
+      annotations:
+        summary: "NodeJS service has been restart {{ $labels.instance }} - {{ $labels.alias }}"
+        description: "NodeJS service has been restarted (VALUE = {{ $value }}\n  LABELS: {{ $labels }})"
+    #High CPU when > 80%
+    - alert: HighCPUNodeJSProcess
+      expr: irate(process_cpu_user_seconds_total[1m]) * 100 > 80
+      for: 2m
+      labels:
+        severity: critical
+      annotations:
+        summary: "High CPU Usage on {{ $labels.instance }} - {{ $labels.job}}"
+        description: "{{ $labels.instance }} - {{ $labels.job }} has a high process CPU usage (current value: {{ $value }}s)"
