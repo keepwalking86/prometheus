@@ -1,0 +1,23 @@
+#Alerting Rules for VMWare
+groups:
+- name: vmware
+  rules:
+##Datastores
+#Datastorage Usage  (> 85%)
+  - alert: datastore-full
+    expr: (vmware_datastore_capacity_size - vmware_datastore_freespace_size) * 100 / vmware_datastore_capacity_size > 85
+    for: 2m
+    labels:
+      severity: critical
+    annotations:
+      summary: "Datastore Usage (instance {{ $labels.instance }},{{ $labels.ds_name }})"
+      description: "Datastore Usage is {{ $value }}"
+#CPU Usage  (> 60)
+  - alert: esxi-cpu-high
+    expr: (vmware_host_cpu_usagemhz_average) * 100 / (vmware_host_cpu_max) > 60
+    for: 2m
+    labels:
+      severity: critical
+    annotations:
+      summary: "CPU Usage (instance {{ $labels.instance }})"
+      description: "VMWareESXi CPU Usage is {{ $value }}"
