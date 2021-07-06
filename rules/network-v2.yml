@@ -1,0 +1,80 @@
+#Alerting Rules for Nexus Switch
+groups:
+- name: Network
+  rules:
+
+#Network throughput in
+#Hight Throughput in  (> 700 Mb/s)
+  - alert: ThroughputIn
+    expr: rate(ifHCInOctets[2m])*8/1024/1024 > 2000
+    for: 2m
+    labels:
+      severity: warning
+    annotations:
+      summary: "High bandwidth (instance {{ $labels.instance }})"
+      description: "Network throughput in is {{ $value }} Mbps"
+#Network interfaces are probably too much bandwidth (> 800 Mb/s)
+  - alert: ThroughputIn
+    expr: rate(ifHCInOctets[2m])*8/1024/1024 > 3000
+    for: 2m
+    labels:
+      severity: critical
+    annotations:
+      summary: "Out of bandwidth (instance {{ $labels.instance }})"
+      description: "Network throughput in is {{ $value }} Mbps"
+
+#Network throughput out
+#High bandwidth (> 3000 Mbps)
+  - alert: ThroughputOut
+    expr: rate(ifHCOutOctets[2m])*8/1024/1024 > 3000
+    for: 2m
+    labels:
+      severity: warning
+    annotations:
+      summary: "High network throughput out (instance {{ $labels.instance }})"
+      description: "High Bandwidth, VALUE = {{ $value }} > 3000Mpbs"
+
+#High bandwidth (> 2000 Mbps)
+  - alert: ThroughputOut
+    expr: rate(ifHCOutOctets[2m])*8/1024/1024 > 5000
+    for: 2m
+    labels:
+      severity: critical
+    annotations:
+      summary: "High network throughput out (instance {{ $labels.instance }})"
+      description: "High Bandwidth, VALUE = {{ $value }} > 5000Mpbs"
+
+# Network Interfaces Speed
+  - alert: Switch254PortChannel
+    expr: ifHighSpeed{ifDescr="Port-channel1",ifIndex="5001",ifName="Po1",instance="192.168.1.254",job="snmp"} < 4000
+    for: 1m
+    labels:
+      severity: critical
+    annotations:
+      summary: "Port-Channel1 Internet network interface speed is changed on Switch 254(instance {{ $labels.instance }})"
+      description: "Network Speed, VALUE = {{ $value }} <4000Mbps"
+#  - alert: Switch254ChangedSpeed
+#    expr: ifHighSpeed{instance="192.168.1.254",ifName=~"Gi1/0/.*",ifName!="Gi1/0/18",ifName!="Gi1/0/25",ifName!="Gi1/0/26",ifName!="Gi1/0/9"} < 0
+#    for: 1m
+#    labels:
+#      severity: critical
+#    annotations:
+#      summary: "Changed network interface speed on Switch 254(instance {{ $labels.instance }})"
+#      description: "Network interface speed, VALUE = {{ $value }} < 1000Mbps" 
+  - alert: Switch254ChangedSpeed
+    expr: ifHighSpeed{instance="192.168.1.254", ifName!="port-channel240", ifName!="port-channel241",ifName!="port-channel245",ifName!="port-channel247",ifName!="port-channel248",ifName!="port-channel250",ifName!="port-channel251",ifName!="port-channel252",ifName!="Ethernet1/2",ifName!="port-channel2",ifName!="Vlan1",ifName!="Vlan221",ifName!="Vlan80",ifName!="mgmt0"} < 10000
+    for: 1m
+    labels:
+      severity: critical
+    annotations:
+      summary: "Changed network interface speed on Switch 254(instance {{ $labels.instance }}-{{ $labels.ifName }})"
+      description: "Network interface speed, VALUE = {{ $value }} < 10G"
+# Network Interfaces is Down
+  - alert: NetworkInterfaceDown
+    expr: ifOperStatus{instance="192.168.1.254", ifName=~"Ethernet1/47|Ethernet1/48|port-channel1|Ethernet1/13|Ethernet1/14|Ethernet1/15|Ethernet1/16|port-channel242|Ethernet1/17|Ethernet1/18|Ethernet1/19|Ethernet1/20|port-channel244|Ethernet1/21|Ethernet1/12|Ethernet1/3|Ethernet1/4|Ethernet1/5|Ethernet1/6|Ethernet1/7|Ethernet1/8|Ethernet1/10|Ethernet1/9|Ethernet1/1|Vlan221|Vlan80|port-channel240"} != 1
+    for: 1m
+    labels:
+      severity: critical
+    annotations:
+      summary: "Network interface is down on (instance {{ $labels.instance }}- ifName{{ $labels.ifName }})"
+      description: "Network Interface is down\n  VALUE = {{ $value }}\n  LABELS: {{ $labels }}"
