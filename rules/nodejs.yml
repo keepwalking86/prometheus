@@ -28,8 +28,8 @@ groups:
       labels:
         severity: critical
       annotations:
-        summary: "High median response time on {{ $labels.instance }} and {{ $labels.method }} {{ $labels.status }}"
-        description: "{{ $labels.instance }}, {{ $labels.method }}, {{ $labels.route }}, {{ $labels.status }} has a median response time above 300ms (current value: {{ $value }}s)"
+        summary: "High median response time on {{ $labels.alias }}, {{ $labels.method }} {{ $labels.route }}, {{ $labels.status }}."
+        description: " Median response time above 100ms (current value: {{ $value }}s)"
     - alert: NodeJSServiceRestart
       expr: sum(changes(process_start_time_seconds[1m])) by (alias) > 0
       for: 0m
@@ -41,7 +41,7 @@ groups:
     #High CPU when > 80%
     - alert: HighCPUNodeJSProcess
       expr: irate(process_cpu_user_seconds_total[1m]) * 100 > 80
-      for: 2m
+      for: 1m
       labels:
         severity: critical
       annotations:
