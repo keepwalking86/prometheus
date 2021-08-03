@@ -1,0 +1,14 @@
+#jmx_prometheus_javaagent
+groups:
+  - name: Java Application
+    rules:
+    # Java Memory Heap Used is high
+    - alert: HeapUsageHigh
+      expr:  (jvm_memory_bytes_used{area="heap"} / jvm_memory_bytes_max) * 100> 85
+      for: 2m
+      labels:
+        severity: critical
+      annotations:
+        summary: "Java Memory Heap Used is high"
+        description: "\n  VALUE = {{ $value }}\n  LABELS: {{ $labels }}"
+    #OutOfMemoryError
