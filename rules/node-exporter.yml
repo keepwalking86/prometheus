@@ -142,6 +142,17 @@ groups:
       summary: "High CPU load (instance {{ $labels.instance }})"
       description: "CPU load is > 80%\n  VALUE = {{ $value }}\n  LABELS: {{ $labels }}"
 
+##HighLoadAverage
+  - alert: LoadAverage1minutes
+    #expr: node_load1 / count by (instance, job) (node_cpu_seconds_total{mode="idle"}) * 100 > 5
+    expr: 100 - (avg by (instance) (rate(node_cpu_seconds_total{mode="idle"}[1m])) * 100) > 50
+    for: 1m
+    labels:
+      severity: critical
+    annotations:
+      summary: "{{ $labels.job }} - {{ $labels.instance }} is high load average (>50%)"
+      description: '\nVALUE = {{ $value | printf "%.2f" }}'
+
 #Swap is filling up
 #Swap is filling up (>80%)
   - alert: SwapIsFillingUp
