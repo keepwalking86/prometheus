@@ -8,7 +8,7 @@ groups:
         severity: warning
       annotations:
         description: 'SSL {{ $labels.instance }} will expire in less than 20 days'
-        summary: '{{ $labels.instace }}: SSL is expiring'
+        summary: '{{ $labels.instance }}: SSL is expiring'
     - alert: SSLExpiring
       expr: probe_ssl_earliest_cert_expiry{job="blackbox"} - time() < 86400 * 5 
       for: 10m
@@ -16,4 +16,4 @@ groups:
         severity: critical
       annotations:
         description: 'SSL {{ $labels.instance }} will expire in less than 5 days'
-        summary: '{{ $labels.instace }}: SSL is expiring'
+        summary: '{{ $labels.instance }}: SSL is expiring'
