@@ -130,7 +130,15 @@ groups:
     annotations:
       summary: "Unusual disk write latency (instance {{ $labels.instance }})"
       description: "Disk latency is growing (write operations > 100ms)\n  VALUE = {{ $value }}\n  LABELS: {{ $labels }}"
-
+#Crash File System
+  - alert: UnusualDiskWriteLatency
+    expr: node_filesystem_readonly{device!~'rootfs'} > 0
+    for: 0m
+    labels:
+      severity: critical
+    annotations:
+      summary: "{{ $labels.instance }} - FileSystem is crash"
+      description: "\nLABELS: {{ $labels }}"
 #High CPU load
 #CPU load is > 80%[copy]
   - alert: HighCpuLoad
@@ -144,8 +152,7 @@ groups:
 
 ##HighLoadAverage
   - alert: LoadAverage1minutes
-    #expr: node_load1 / count by (instance, job) (node_cpu_seconds_total{mode="idle"}) * 100 > 5
-    expr: 100 - (avg by (instance) (rate(node_cpu_seconds_total{mode="idle"}[1m])) * 100) > 50
+    expr: node_load1 / count by (instance, job) (node_cpu_seconds_total{mode="idle"}) * 100 > 50
     for: 1m
     labels:
       severity: critical

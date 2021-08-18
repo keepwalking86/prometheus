@@ -14,10 +14,10 @@ groups:
       description: "Datastore Usage is {{ $value }}"
 #CPU Usage  (> 60)
   - alert: esxi-cpu-high
-    expr: (vmware_host_cpu_usagemhz_average) * 100 / (vmware_host_cpu_max) > 60
+    expr: (vmware_host_cpu_usagemhz_average) * 100 / (vmware_host_cpu_max) > 80
     for: 2m
     labels:
       severity: critical
     annotations:
-      summary: "CPU Usage (instance {{ $labels.instance }})"
-      description: "VMWareESXi CPU Usage is {{ $value }}"
+      summary: "CPU Usage on ESXi {{ $labels.instance }} - {{ $labels.host_name }} is high"
+      description: "\nValue is {{ $value }}"
