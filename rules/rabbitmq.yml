@@ -1,0 +1,32 @@
+groups:
+- name: Check_RabbitMQ_Queues
+  rules:
+  - alert: "[ALERT]-RabbitMQ_Queues_1000message_for_1m"
+    expr: rabbitmq_queue_messages{production="crm2"} > 1000
+    for: 1m
+    labels:
+      severity: YELLOW
+      production: crm2
+    annotations:
+      description: 'Messages on queue  {{$labels.queue}} of {{$labels.instance}} get {{ $value}} messages > 1000 messages for 1 minute'
+      summary: "WARING: Rabbit queue  {{$labels.queue}} of {{$labels.instance}} get {{ $value}} messages > 1000 messages for 1 minute"
+
+  - alert: "[ALERT]-RabbitMQ_Queues_1000message_for_5m"
+    expr: rabbitmq_queue_messages{production="crm2"} > 1000
+    for: 5m
+    labels:
+      severity: ORANGE
+      production: crm2
+    annotations:
+      description: 'Messages on queue  {{$labels.queue}} of {{$labels.instance}} get {{ $value}} messages > 1000 messages for 5 minutes'
+      summary: "CRITICAL: Rabbit queue {{$labels.queue}} of {{$labels.instance}} get {{ $value}} messages > 1000 messages for 5 minutes"
+
+  - alert: "[ALERT]-RabbitMQ_Queues_1000message_in_10m"
+    expr: rabbitmq_queue_messages{production="crm2"} > 1000
+    for: 10m
+    labels:
+      severity: RED
+      production: crm2
+    annotations:
+      description: 'Messages on queue  {{$labels.queue}} of {{$labels.instance}} get {{ $value}} messages > 1000 messages for 10 minutes'
+      summary: "CRITICAL: Rabbit queue {{$labels.queue}} of {{$labels.instance}} get {{ $value}} messages > 1000 messages for 10 minutes"
